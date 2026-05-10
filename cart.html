@@ -22,7 +22,13 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 <div id="cart-root" class="container-x"></div>
 <div id="footer-root"></div>
 <script src="/assets/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+const sb = window.supabase.createClient(
+  "https://mhpdfxdmyxerxxjfzsiq.supabase.co","sb_publishable_fdRpKprkOnOehdAVr9FSFQ_8I1rG1DM"
+  
+);
+
 document.getElementById('nav-root').innerHTML = navHTML('');
 document.getElementById('footer-root').innerHTML = footerHTML();
 
@@ -30,6 +36,8 @@ function renderCart(){
   const cart = getCart();
   const items = cart.map(e=>({product:PRODUCTS.find(p=>p.id===e.id),qty:e.qty})).filter(e=>e.product);
   const total = items.reduce((s,e)=>s+e.product.price*e.qty,0);
+ 
+  
   const root = document.getElementById('cart-root');
 
   if(!items.length){
@@ -55,6 +63,12 @@ function renderCart(){
         <div class="summary-row"><span style="color:var(--muted-foreground)">Shipping</span><span style="color:var(--accent)">Calculated on WhatsApp</span></div>
         <div class="summary-row total"><span>Total</span><span>${fmtPrice(total)}</span></div>
         <a href="${waCartOrder(items,total)}" target="_blank" rel="noreferrer" class="btn btn-primary" style="width:100%;margin-top:1.5rem;padding:1rem">💬 Order on WhatsApp</a>
+        <button
+onclick="startCheckout()"
+class="btn btn-dark"
+style="width:100%;margin-top:1rem;padding:1rem">
+💳 Pay Now
+</button>
         <p style="margin-top:.75rem;font-size:11px;color:var(--muted-foreground);text-align:center;line-height:1.6">We'll confirm availability, customisation & shipping.</p>
       </aside>
     </div>`;
@@ -82,7 +96,53 @@ function renderCart(){
       </div>
     </div>`).join('') + `<button onclick="cartClear();renderCart()" style="background:none;border:0;color:var(--muted-foreground);font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:.5rem 0">Clear cart</button>`;
 }
+async function startCheckout(){
 
+  const name = prompt("Enter your name");
+  if(!name) return;
+
+  const phone = prompt("Enter phone number");
+  if(!phone) return;
+
+  const address = prompt("Enter address");
+  if(!address) return;
+
+  const cart = getCart();
+
+  const items = cart.map(e=>({
+    product: PRODUCTS.find(p=>p.id===e.id),
+    qty: e.qty
+  })).filter(e=>e.product);
+
+  const total = items.reduce(
+    (s,e)=>s + e.product.price * e.qty,
+    0
+  );
+
+  const { error } = await sb
+    .from("Orders")
+    .insert([
+      {
+        customer_name: name,
+        phone: phone,
+        address: address,
+        products: items,
+        total: total,
+        payment_status: "pending"
+      }
+    ]);
+
+  if(error){
+  console.log(error);
+  alert(error.message);
+  return;
+}
+
+  alert("Order placed successfully!");
+
+  cartClear();
+  renderCart();
+}
 renderCart();
 updateCartCount();
 window.addEventListener('cart:update', ()=>{ updateCartCount(); });

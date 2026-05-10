@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Hampers — C3 Studio</title>
+<meta name="description" content="Browse all premium gift hampers. Filter by category, price & occasion.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Category dropdown chips */
+.filter-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;align-items:center}
+.cat-dd{position:relative;display:inline-block}
+.cat-dd-menu{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.4rem;min-width:200px;z-index:99;box-shadow:var(--shadow-soft);margin-top:4px}
+.cat-dd-menu.open{display:block}
+.cat-dd-menu a{display:block;padding:.45rem .75rem;border-radius:6px;font-size:13px;color:var(--foreground);text-decoration:none;white-space:nowrap}
+.cat-dd-menu a:hover,.cat-dd-menu a.active{background:var(--secondary);color:var(--primary)}
+@media(max-width:600px){
+  .filter-bar{gap:.4rem}
+  .cat-dd-menu{min-width:160px}
+}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<section class="page-banner">
+  <div class="container-x">
+    <div class="label">The Collection</div>
+    <h1>Shop Hampers</h1>
+    <p>Curated, customisable & crafted with love. Find the perfect hamper for every occasion.</p>
+  </div>
+</section>
+
+<section class="container-x section">
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filterBar">
+    <button class="chip" id="chipAll" onclick="setCategory('All')">All</button>
+    <!-- Category chips with dropdown submenus injected by JS -->
+  </div>
+  <!-- Price/sort row -->
+  <div class="price-row-filter">
+    <span style="letter-spacing:.2em;text-transform:uppercase">Price ₹</span>
+    <input type="number" id="minPrice" placeholder="Min" oninput="applyFilters()">
+    —
+    <input type="number" id="maxPrice" placeholder="Max" oninput="applyFilters()">
+    <select id="sortSel" onchange="applyFilters()">
+      <option value="featured">Sort: Featured</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+    </select>
+    <button class="chip" style="margin-left:auto" onclick="clearFilters()">Clear filters</button>
+    <span id="countLabel">0 hampers</span>
+  </div>
+
+  <div class="grid-products" id="productsGrid"></div>
+  <div id="noResults" style="display:none;text-align:center;padding:5rem;background:var(--secondary);border-radius:18px">
+    <p style="font-family:var(--font-display);font-size:1.5rem;color:rgba(58,32,31,.7)">No hampers match these filters</p>
+    <a href="/shop.html" class="btn btn-primary" style="margin-top:1.5rem">Reset</a>
+  </div>
+</section>
+
+<div id="footer-root"></div>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML = navHTML('shop');
+document.getElementById('footer-root').innerHTML = footerHTML();
+
+const params = new URLSearchParams(location.search);
+let activeCat = params.get('category') || 'All';
+let activeSub = params.get('sub') || null;
+let activeQ   = (params.get('q') || '').toLowerCase();
+let activeMin = params.get('min') ? +params.get('min') : null;
+let activeMax = params.get('max') ? +params.get('max') : null;
+let activeSort= 'featured';
+
+if(params.get('min')) document.getElementById('minPrice').value = params.get('min');
+if(params.get('max')) document.getElementById('maxPrice').value = params.get('max');
+if(params.get('sort')) {document.getElementById('sortSel').value=params.get('sort');activeSort=params.get('sort');}
+
+// Build category chips with dropdown submenus
+const filterBar = document.getElementById('filterBar');
+
+// Close all open cat dropdowns
+function closeCatMenus(except) {
+  document.querySelectorAll('.cat-dd-menu').forEach(m=>{ if(m!==except) m.classList.remove('open'); });
+}
+
+document.addEventListener('click', ()=>closeCatMenus(null));
+
+CATEGORIES.forEach(c=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'cat-dd';
+
+  const btn = document.createElement('button');
+  btn.className = 'chip' + (activeCat===c.key?' active':'');
+  btn.innerHTML = c.label + ' <span style="font-size:9px">▼</span>';
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    const menu = wrap.querySelector('.cat-dd-menu');
+    // Toggle
+    const wasOpen = menu.classList.contains('open');
+    closeCatMenus(null);
+    if(!wasOpen) menu.classList.add('open');
+  };
+
+  const menu = document.createElement('div');
+  menu.className = 'cat-dd-menu';
+
+  // "All in category" link
+  const allLink = document.createElement('a');
+  allLink.href = '#';
+  allLink.textContent = 'All ' + c.label;
+  if(activeCat===c.key && !activeSub) allLink.classList.add('active');
+  allLink.onclick = function(e){ e.preventDefault(); setCategory(c.key); closeCatMenus(null); };
+  menu.appendChild(allLink);
+
+  // Subcategory links
+  c.subs.forEach(s=>{
+    const a = document.createElement('a');
+    a.href = '#';
+    a.textContent = s;
+    if(activeCat===c.key && activeSub===s) a.classList.add('active');
+    a.onclick = function(e){ e.preventDefault(); setCategory(c.key, s); closeCatMenus(null); };
+    menu.appendChild(a);
+  });
+
+  wrap.appendChild(btn);
+  wrap.appendChild(menu);
+  filterBar.appendChild(wrap);
+});
+
+function updateChipStates() {
+  document.getElementById('chipAll').classList.toggle('active', activeCat==='All');
+  document.querySelectorAll('#filterBar .cat-dd button.chip').forEach((btn,i)=>{
+    btn.classList.toggle('active', activeCat===CATEGORIES[i].key);
+  });
+}
+
+function setCategory(cat, sub) {
+  activeCat = cat;
+  activeSub = sub || null;
+  applyFilters();
+  updateChipStates();
+}
+
+function clearFilters() {
+  window.location.href='/shop.html';
+}
+
+function applyFilters() {
+  activeMin = document.getElementById('minPrice').value ? +document.getElementById('minPrice').value : null;
+  activeMax = document.getElementById('maxPrice').value ? +document.getElementById('maxPrice').value : null;
+  activeSort = document.getElementById('sortSel').value;
+
+  let results = PRODUCTS.slice();
+  if(activeCat !== 'All') results = results.filter(p=>matchCat(p,activeCat));
+  if(activeSub) results = results.filter(p=>matchSub(p,activeSub));
+  if(activeMin!=null) results = results.filter(p=>p.price>=activeMin);
+  if(activeMax!=null) results = results.filter(p=>p.price<=activeMax);
+  if(activeQ) results = results.filter(p=>
+    p.name.toLowerCase().includes(activeQ)||
+    p.tagline.toLowerCase().includes(activeQ)||
+    normArr(p.category).join(' ').includes(activeQ)||
+    normArr(p.subcategory).join(' ').includes(activeQ)
+  );
+  if(activeSort==='low') results.sort((a,b)=>a.price-b.price);
+  if(activeSort==='high') results.sort((a,b)=>b.price-a.price);
+
+  const grid = document.getElementById('productsGrid');
+  const noRes = document.getElementById('noResults');
+  document.getElementById('countLabel').textContent = results.length + ' ' + (results.length===1?'hamper':'hampers');
+  if(results.length) {
+    grid.style.display='';
+    noRes.style.display='none';
+    grid.innerHTML = results.map((p,i)=>productCardHTML(p,i<4)).join('');
+  } else {
+    grid.style.display='none';
+    noRes.style.display='';
+  }
+}
+
+updateChipStates();
+applyFilters();
+
+updateCartCount();
+window.addEventListener('cart:update', updateCartCount);
+</script>
+</body>
+</html>

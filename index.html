@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C3 Studio — Luxury Customised Gift Hampers | Delhi NCR</title>
+<meta name="description" content="Premium customised gift hampers for weddings, baby showers, corporate & festive occasions. Handcrafted in Delhi, shipped worldwide.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+
+
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Carousel — fixed rectangle, image fits natural ratio, no extra empty space */
+.carousel{position:relative;overflow:hidden;background:#f3e4d8;width:100%;aspect-ratio:16/7;max-height:560px}
+.carousel-slide{display:none;width:100%;height:100%}
+.carousel-slide.active{display:block}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.75);border:none;border-radius:50%;width:40px;height:40px;font-size:22px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.carousel-arrow:hover{background:rgba(255,255,255,.95)}
+.carousel-arrow.prev{left:12px}
+.carousel-arrow.next{right:12px}
+.carousel-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
+.carousel-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:background .2s}
+.carousel-dots .dot.active{background:#fff}
+
+@media(max-width:640px){
+  .carousel{aspect-ratio:4/3;max-height:none}
+  .carousel-arrow{width:32px;height:32px;font-size:18px}
+}
+
+/* Secondary festival banner — same rectangle treatment */
+.feature-banner{width:100%;aspect-ratio:16/6;max-height:480px;overflow:hidden;background:var(--secondary)}
+.feature-banner img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+@media(max-width:640px){.feature-banner{aspect-ratio:4/3;max-height:none}}
+
+/* Mother's Day hero — premium palettes.com style image banner */
+.mom-hero{position:relative;width:100%;aspect-ratio:16/6;max-height:560px;overflow:hidden;background:#fdeee5}
+.mom-hero img{width:100%;height:100%;object-fit:cover;object-position:right center;display:block}
+.mom-hero .mom-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 7vw;background:linear-gradient(90deg,rgba(253,233,222,.92) 0%,rgba(253,233,222,.7) 38%,rgba(253,233,222,.15) 62%,rgba(253,233,222,0) 80%);color:var(--foreground)}
+.mom-hero .mom-overlay .eyebrow{display:inline-flex;align-items:center;gap:.75rem;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#8c2837;margin-bottom:1.1rem;font-weight:600}
+.mom-hero .mom-overlay .eyebrow::before,.mom-hero .mom-overlay .eyebrow::after{content:"";width:28px;height:1px;background:linear-gradient(90deg,transparent,#c9954f,transparent)}
+.mom-hero .mom-overlay h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4.8vw,3.8rem);margin:0;line-height:1.05;font-weight:600;letter-spacing:-.01em;color:#5a1f24}
+.mom-hero .mom-overlay h2 .script{font-family:'Great Vibes',cursive;background:linear-gradient(135deg,#c9954f,#8c2837);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:400;font-size:1.25em;line-height:1;padding:0 .05em}
+.mom-hero .mom-overlay p{margin:1.25rem 0 1.75rem;max-width:480px;color:#5a3a32;font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.55;font-style:italic}
+.mom-hero .mom-overlay .cta{align-self:flex-start;background:linear-gradient(135deg,#8c2837,#c9954f);color:#fff;padding:.95rem 2rem;border-radius:999px;text-decoration:none;font-weight:600;letter-spacing:.05em;font-size:.92rem;text-transform:uppercase;box-shadow:0 12px 28px -10px rgba(140,40,55,.55);transition:transform .25s ease,box-shadow .25s ease;border:none}
+.mom-hero .mom-overlay .cta:hover{transform:translateY(-2px);box-shadow:0 18px 36px -12px rgba(140,40,55,.65)}
+@media(max-width:640px){
+
+  .mom-hero{
+    aspect-ratio: auto !important;
+    max-height: none !important;
+    height: auto;
+  }
+
+  .mom-hero img{
+    width: 100%;
+    height: auto;
+    object-fit: contain !important;
+    display: block;
+  }
+
+  .mom-hero .mom-overlay{
+    position: relative !important;
+    background: none !important;
+    padding: 1.5rem;
+  }
+
+  .mom-hero h2{
+    font-size: 1.8rem;
+  }
+}
+</style>
+</head>
+c<body>
+<div id="nav-root"></div>
+
+<section class="carousel" id="carousel">
+  <div class="carousel-slide active"><img src="/images/banner-1.jpg" alt="Luxury Gift Hampers" fetchpriority="high"></div>
+  <div class="carousel-slide"><img src="/images/banner-2.jpg" alt="Wedding Trousseau Hampers" loading="lazy"></div>
+  <div class="carousel-slide"><img src="/images/banner-3.jpg" alt="Baby Shower Hampers" loading="lazy"></div>
+  <div class="carousel-slide"><img src="/images/banner-4.jpg" alt="Corporate And Bulk Gifting" loading="lazy"></div>
+  <button class="carousel-arrow prev" aria-label="Previous" onclick="carouselPrev()"><</button>
+  <button class="carousel-arrow next" aria-label="Next" onclick="carouselNext()">></button>
+  <div class="carousel-dots" id="carouselDots"></div>
+</section>
+
+
+<section class="mom-hero">
+  <img src="/images/banner-mom.jpg" alt="Mother's Day Edit" loading="lazy">
+  <div class="mom-overlay">
+    <div class="eyebrow">Mother's Day · 10 May 2026</div>
+    <h2>For the woman<br>who is <span class="script">everything</span>.</h2>
+    <p>Hand-tied peonies, heirloom keepsakes and indulgent little luxuries — thoughtfully curated to say what words cannot.</p>
+    <a href="/shop.html?q=mother" class="cta">Shop the Mother's Edit →</a>
+  </div>
+</section>
+<br>
+<br>
+<section class="container-x section">
+  <div class="section-head">
+    <div class="label">Shop by Category</div>
+    <h2>Find the perfect gift</h2>
+  </div>
+  <div class="cat-circles" id="catCircles"></div>
+</section>
+
+<section class="container-x section">
+  <div class="section-head">
+    <div class="label">Shop by Price</div>
+    <h2>Gifting for every budget</h2>
+  </div>
+  <div class="price-grid">
+    <a href="/shop.html?max=999" class="price-tile">
+      <img src="/images/price-under999.jpg" alt="Under ₹999" loading="lazy">
+      <div class="overlay"><div class="label">Pocket-friendly</div><h3>Under ₹999</h3></div>
+    </a>
+    <a href="/shop.html?max=1499" class="price-tile">
+      <img src="/images/price-under1499.jpg" alt="Under ₹1499" loading="lazy">
+      <div class="overlay"><div class="label">Sweet picks</div><h3>Under ₹1499</h3></div>
+    </a>
+    <a href="/shop.html?max=1999" class="price-tile">
+      <img src="/images/price-under1999.jpg" alt="Under ₹1999" loading="lazy">
+      <div class="overlay"><div class="label">Premium</div><h3>Under ₹1999</h3></div>
+    </a>
+    <a href="/shop.html?min=2000" class="price-tile">
+      <img src="/images/price-luxe.jpg" alt="₹2000 & above" loading="lazy">
+      <div class="overlay"><div class="label">Luxury edit</div><h3>₹2000 &amp; above</h3></div>
+    </a>
+  </div>
+</section>
+
+<div class="container-x">
+  <a href="/contact.html" class="custom-cta" style="display:block">
+    <img src="/images/custom-hamper.jpg" alt="Make your own hamper" loading="lazy">
+    <div class="overlay">
+      <div class="content">
+        <div class="label">Bespoke Gifting</div>
+        <h2>Make your <span class="em">own</span> hamper</h2>
+        <p>From intimate favours to grand corporate hampers — we craft every detail to your vision.</p>
+        <span class="btn btn-primary" style="margin-top:1.5rem">Click Here →</span>
+      </div>
+    </div>
+  </a>
+</div>
+
+<section class="container-x section">
+  <div class="section-head">
+    <div class="label">Best Sellers</div>
+    <h2>Hampers we love</h2>
+  </div>
+  <div class="grid-products" id="bestSellers"></div>
+  <div style="text-align:center;margin-top:2.5rem">
+    <a href="/shop.html" class="btn btn-dark">View All Hampers →</a>
+  </div>
+</section>
+
+<div id="footer-root"></div>
+
+<script src="/assets/site.js"></script>
+<script>
+// Render nav & footer
+document.getElementById('nav-root').innerHTML = navHTML('home');
+document.getElementById('footer-root').innerHTML = footerHTML();
+
+// Carousel — 2 second auto-advance
+const slides = document.querySelectorAll('.carousel-slide');
+const dotsEl = document.getElementById('carouselDots');
+let cur = 0;
+slides.forEach((_,i)=>{
+  const d = document.createElement('span');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = ()=>goTo(i);
+  dotsEl.appendChild(d);
+});
+function goTo(n){
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur=(n+slides.length)%slides.length;
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+}
+function carouselPrev(){goTo(cur-1);}
+function carouselNext(){goTo(cur+1);}
+setInterval(()=>goTo(cur+1), 2000);
+
+// Cat circles
+const cats = [
+  {img:"/images/cat-wedding.jpg",name:"Wedding",href:"/shop.html?category=Wedding"},
+  {img:"/images/cat-anniversary.jpg",name:"Anniversary",href:"/shop.html?category=Occasions"},
+  {img:"/images/cat-babyshower.jpg",name:"Baby Shower",href:"/shop.html?category=Occasions&sub=Baby+Shower+And+Baby+Announcement%2F+Baby+Arrival"},
+  {img:"/images/cat-birthday.jpg",name:"Birthday",href:"/shop.html?category=Birthday"},
+  {img:"/images/cat-festivals.jpg",name:"Festivals",href:"/shop.html?category=Festivals"},
+  {img:"/images/cat-rakhi.jpg",name:"Rakhi",href:"/shop.html?category=Festivals&sub=Rakhi"},
+  {img:"/images/cat-cake.jpg",name:"Cake & Flowers",href:"/shop.html?category=Cake%2FFlower+Hampers"},
+  {img:"/images/cat-corporate.jpg",name:"Corporate",href:"/bulk.html"}
+];
+document.getElementById('catCircles').innerHTML = cats.map(c=>`
+  <a href="${c.href}" class="cat-circle">
+    <div class="img-wrap"><img src="${c.img}" alt="${c.name}" loading="lazy"></div>
+    <div class="name">${c.name}</div>
+  </a>`).join('');
+
+// Best sellers
+const bs = PRODUCTS.slice(0,8);
+document.getElementById('bestSellers').innerHTML = bs.map((p,i)=>productCardHTML(p,i<4)).join('');
+
+updateCartCount();
+window.addEventListener('cart:update', updateCartCount);
+</script>
+</body>
+</html>

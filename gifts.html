@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For Gifts — C3 Studio</title>
+<meta name="description" content="Beautiful hampers organised by who you're gifting.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+<section class="page-banner">
+  <div class="container-x">
+    <div class="label">Curated For Every Loved One</div>
+    <h1>For Gifts</h1>
+    <p>Beautiful hampers organised by who you're gifting.</p>
+  </div>
+</section>
+<section class="container-x section">
+  <div class="price-grid">
+    <a href="/shop.html?category=Wedding" class="price-tile">
+      <img src="/images/cat-wedding.jpg" alt="For the Couple" loading="lazy">
+      <div class="overlay"><div class="label">Shop the edit</div><h3>For the Couple</h3></div>
+    </a>
+    <a href="/shop.html?category=Occasions" class="price-tile">
+      <img src="/images/cat-occasions.jpg" alt="Occasions" loading="lazy">
+      <div class="overlay"><div class="label">Shop the edit</div><h3>Occasions</h3></div>
+    </a>
+    <a href="/shop.html?category=Occasions&sub=Baby+Shower+And+Baby+Announcement%2F+Baby+Arrival" class="price-tile">
+      <img src="/images/cat-babyshower.jpg" alt="For Baby" loading="lazy">
+      <div class="overlay"><div class="label">Shop the edit</div><h3>For Baby</h3></div>
+    </a>
+    <a href="/shop.html?category=Birthday" class="price-tile">
+      <img src="/images/cat-birthday.jpg" alt="For Kids" loading="lazy">
+      <div class="overlay"><div class="label">Shop the edit</div><h3>For Kids</h3></div>
+    </a>
+    <a href="/shop.html?category=Cake%2FFlower+Hampers" class="price-tile">
+      <img src="/images/cat-cake.jpg" alt="Cakes & Flowers" loading="lazy">
+      <div class="overlay"><div class="label">Shop the edit</div><h3>Cakes & Flowers</h3></div>
+    </a>
+  </div>
+</section>
+<div id="footer-root"></div>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML = navHTML('gifts');
+document.getElementById('footer-root').innerHTML = footerHTML();
+updateCartCount();
+window.addEventListener('cart:update', updateCartCount);
+</script>
+</body>
+</html>

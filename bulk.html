@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk & Corporate Gifting — C3 Studio</title>
+<meta name="description" content="From 25 to 5,000 hampers — fully customised to your theme, brand and budget.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+<section class="page-banner">
+  <div class="container-x">
+    <div class="label">For Brands & Big Days</div>
+    <h1>Bulk & Corporate Gifting</h1>
+    <p>From 25 to 5,000 hampers — fully customised to your theme, brand and budget.</p>
+  </div>
+</section>
+<section class="container-x section">
+  <div class="section-head">
+    <div class="label">Browse Categories</div>
+    <h2>Choose your collection</h2>
+  </div>
+  <div class="cat-circles">
+    <a href="/shop.html?category=Wedding" class="cat-circle">
+      <div class="img-wrap"><img src="/images/cat-wedding.jpg" alt="Wedding" loading="lazy"></div>
+      <div class="name">Wedding</div>
+    </a>
+    <a href="/shop.html?category=Festivals" class="cat-circle">
+      <div class="img-wrap"><img src="/images/cat-festivals.jpg" alt="Festivals" loading="lazy"></div>
+      <div class="name">Festivals</div>
+    </a>
+    <a href="/shop.html?category=Occasions&sub=Baby+Shower+And+Baby+Announcement%2F+Baby+Arrival" class="cat-circle">
+      <div class="img-wrap"><img src="/images/cat-babyshower.jpg" alt="Baby Shower" loading="lazy"></div>
+      <div class="name">Baby Shower</div>
+    </a>
+    <a href="/shop.html?category=Birthday" class="cat-circle">
+      <div class="img-wrap"><img src="/images/cat-birthday.jpg" alt="Birthday" loading="lazy"></div>
+      <div class="name">Birthday</div>
+    </a>
+    <a href="/shop.html?category=Cake%2FFlower+Hampers" class="cat-circle">
+      <div class="img-wrap"><img src="/images/cat-cake.jpg" alt="Cake & Flowers" loading="lazy"></div>
+      <div class="name">Cake & Flowers</div>
+    </a>
+  </div>
+  <div style="text-align:center;margin-top:3rem">
+    <a id="bulkWA" href="#" target="_blank" rel="noreferrer" class="btn btn-primary">💬 Get a Bulk Quote</a>
+  </div>
+</section>
+<div id="footer-root"></div>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML = navHTML('');
+document.getElementById('footer-root').innerHTML = footerHTML();
+document.getElementById('bulkWA').href = 'https://wa.me/'+WA+'?text='+encodeURIComponent("Hi C3 Studio! I'd like a bulk gifting quote.");
+updateCartCount();
+window.addEventListener('cart:update', updateCartCount);
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Story — C3 Studio</title>
+<meta name="description" content="C3 Studio — Crafting heirloom-worthy gift moments from Delhi NCR.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+<section class="page-banner">
+  <div class="container-x">
+    <img src="/images/logo.png" alt="C3 Studio" style="width:80px;height:80px;border-radius:50%;margin:0 auto;box-shadow:0 0 0 4px rgba(212,154,94,.4),var(--shadow-luxe);object-fit:cover">
+    <h1 style="margin-top:1.5rem">Our Story</h1>
+    <p>Crafting heirloom-worthy gift moments — one ribbon, one petal, one memory at a time.</p>
+  </div>
+</section>
+<section class="story">
+  <p>C3 Studio was born from a simple belief: <span class="script">gifting is an art</span>. From our atelier in Delhi NCR, we curate luxurious, customised hampers for weddings, trousseaus, baby showers, festive occasions and corporate gifting — each piece designed to tell a story.</p>
+  <p>Today, we're proud to be Delhi's favourite premium gift hampers brand, shipping our handcrafted creations to celebrations across the world. Whether it's a single one-of-a-kind piece or 500 corporate hampers, every order is treated with the same obsessive love for detail.</p>
+</section>
+<section class="container-x" style="text-align:center;padding:3rem 1rem 4rem">
+  <h2 style="font-family:var(--font-display);font-size:clamp(1.75rem,3vw,2.5rem)">Let's create something beautiful together</h2>
+  <a href="/contact.html" class="btn btn-primary" style="margin-top:1.5rem">Get in Touch</a>
+</section>
+<div id="footer-root"></div>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML = navHTML('about');
+document.getElementById('footer-root').innerHTML = footerHTML();
+updateCartCount();
+window.addEventListener('cart:update', updateCartCount);
+</script>
+</body>
+</html>

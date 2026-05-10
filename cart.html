@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Cart — C3 Studio</title>
+<meta name="description" content="Review your selected gift hampers and place your order.">
+<link rel="icon" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="/assets/styles-D3NVSlnM.css">
+<style>
+:root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
+body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
+.marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+<div id="cart-root" class="container-x"></div>
+<div id="footer-root"></div>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML = navHTML('');
+document.getElementById('footer-root').innerHTML = footerHTML();
+
+function renderCart(){
+  const cart = getCart();
+  const items = cart.map(e=>({product:PRODUCTS.find(p=>p.id===e.id),qty:e.qty})).filter(e=>e.product);
+  const total = items.reduce((s,e)=>s+e.product.price*e.qty,0);
+  const root = document.getElementById('cart-root');
+
+  if(!items.length){
+    root.innerHTML=`<div class="empty-cart">
+      <div class="empty-icon">🛍</div>
+      <h1 style="font-family:var(--font-display);font-size:2.5rem">Your cart is empty</h1>
+      <p style="margin-top:.75rem;color:var(--muted-foreground)">Discover our curated luxury hampers and add your favourites.</p>
+      <a href="/shop.html" class="btn btn-primary" style="margin-top:1.75rem">Browse Hampers</a>
+    </div>`;
+    return;
+  }
+
+  root.innerHTML=`
+    <div style="padding:1.5rem 0">
+      <a href="/shop.html" style="font-size:11px;letter-spacing:.2em;text-transform:uppercase">← Continue Shopping</a>
+    </div>
+    <h1 style="font-family:var(--font-display);font-size:2.5rem;margin-bottom:2rem">Your Cart</h1>
+    <div class="cart-grid">
+      <div id="cartItems"></div>
+      <aside class="summary">
+        <h2>Order Summary</h2>
+        <div class="summary-row"><span style="color:var(--muted-foreground)">Subtotal</span><span>${fmtPrice(total)}</span></div>
+        <div class="summary-row"><span style="color:var(--muted-foreground)">Shipping</span><span style="color:var(--accent)">Calculated on WhatsApp</span></div>
+        <div class="summary-row total"><span>Total</span><span>${fmtPrice(total)}</span></div>
+        <a href="${waCartOrder(items,total)}" target="_blank" rel="noreferrer" class="btn btn-primary" style="width:100%;margin-top:1.5rem;padding:1rem">💬 Order on WhatsApp</a>
+        <p style="margin-top:.75rem;font-size:11px;color:var(--muted-foreground);text-align:center;line-height:1.6">We'll confirm availability, customisation & shipping.</p>
+      </aside>
+    </div>`;
+
+  document.getElementById('cartItems').innerHTML = items.map(e=>`
+    <div class="cart-item">
+      <a href="/product.html?slug=${e.product.slug}"><img src="${getImage(e.product)}" alt="${e.product.name}"></a>
+      <div style="flex:1;min-width:0">
+        <div class="card-tag">${getCat(e.product)}</div>
+        <a href="/product.html?slug=${e.product.slug}"><h3 style="font-family:var(--font-display);font-size:1rem">${e.product.name}</h3></a>
+        <div style="margin-top:.25rem;color:var(--primary);font-weight:500;font-size:.9rem">${fmtPrice(e.product.price)}</div>
+        <div style="margin-top:.75rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+          <div class="qty-control">
+            <button onclick="cartSetQty('${e.product.id}',${e.qty-1});renderCart()">−</button>
+            <span>${e.qty}</span>
+            <button onclick="cartSetQty('${e.product.id}',${e.qty+1});renderCart()">+</button>
+          </div>
+          <a href="${waCustomise(e.product)}" target="_blank" rel="noreferrer" class="btn btn-gold" style="padding:.45rem .85rem;font-size:9px">✨ Customise</a>
+          <button onclick="cartRemove('${e.product.id}');renderCart()" aria-label="Remove" style="background:none;border:0;cursor:pointer;color:var(--muted-foreground);padding:.5rem">🗑</button>
+        </div>
+      </div>
+      <div style="flex-shrink:0;text-align:right">
+        <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-foreground)">Subtotal</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem">${fmtPrice(e.product.price*e.qty)}</div>
+      </div>
+    </div>`).join('') + `<button onclick="cartClear();renderCart()" style="background:none;border:0;color:var(--muted-foreground);font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:.5rem 0">Clear cart</button>`;
+}
+
+renderCart();
+updateCartCount();
+window.addEventListener('cart:update', ()=>{ updateCartCount(); });
+</script>
+</body>
+</html>

@@ -14,11 +14,9 @@
 :root{--radius:.75rem;--background:oklch(98.5% .012 60);--foreground:oklch(30% .05 25);--card:oklch(100% 0 0);--card-foreground:oklch(30% .05 25);--primary:oklch(55% .13 18);--primary-foreground:oklch(98% .01 60);--primary-glow:oklch(70% .15 18);--secondary:oklch(93% .025 30);--secondary-foreground:oklch(30% .05 25);--muted:oklch(93% .02 30);--muted-foreground:oklch(50% .04 25);--accent:oklch(72% .12 70);--accent-foreground:oklch(30% .05 25);--border:oklch(90% .02 30);--input:oklch(90% .02 30);--ring:oklch(72% .12 70);--gradient-gold:linear-gradient(135deg,#e8c79a,#c9954f);--gradient-blush:linear-gradient(180deg,#fdf9f5 0%,#f6e1d6 100%);--gradient-luxe:linear-gradient(135deg,#f4e0d8 0%,#ecc5b8 50%,#d8a880 100%);--shadow-soft:0 4px 24px -8px #8c28372e;--shadow-luxe:0 20px 60px -20px #78283240;--shadow-gold:0 8px 30px -10px #d49a5e66}
 body{font-family:var(--font-body);background:var(--background);color:var(--foreground);margin:0}
 
-
 .marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* Carousel — fixed rectangle, image fits natural ratio, no extra empty space */
 .carousel{position:relative;overflow:hidden;background:#f3e4d8;width:100%;aspect-ratio:16/7;max-height:560px}
 .carousel-slide{display:none;width:100%;height:100%}
 .carousel-slide.active{display:block}
@@ -36,12 +34,10 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
   .carousel-arrow{width:32px;height:32px;font-size:18px}
 }
 
-/* Secondary festival banner — same rectangle treatment */
 .feature-banner{width:100%;aspect-ratio:16/6;max-height:480px;overflow:hidden;background:var(--secondary)}
 .feature-banner img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 @media(max-width:640px){.feature-banner{aspect-ratio:4/3;max-height:none}}
 
-/* Mother's Day hero — premium palettes.com style image banner */
 .mom-hero{position:relative;width:100%;aspect-ratio:16/6;max-height:560px;overflow:hidden;background:#fdeee5}
 .mom-hero img{width:100%;height:100%;object-fit:cover;object-position:right center;display:block}
 .mom-hero .mom-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 7vw;background:linear-gradient(90deg,rgba(253,233,222,.92) 0%,rgba(253,233,222,.7) 38%,rgba(253,233,222,.15) 62%,rgba(253,233,222,0) 80%);color:var(--foreground)}
@@ -53,33 +49,14 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 .mom-hero .mom-overlay .cta{align-self:flex-start;background:linear-gradient(135deg,#8c2837,#c9954f);color:#fff;padding:.95rem 2rem;border-radius:999px;text-decoration:none;font-weight:600;letter-spacing:.05em;font-size:.92rem;text-transform:uppercase;box-shadow:0 12px 28px -10px rgba(140,40,55,.55);transition:transform .25s ease,box-shadow .25s ease;border:none}
 .mom-hero .mom-overlay .cta:hover{transform:translateY(-2px);box-shadow:0 18px 36px -12px rgba(140,40,55,.65)}
 @media(max-width:640px){
-
-  .mom-hero{
-    aspect-ratio: auto !important;
-    max-height: none !important;
-    height: auto;
-  }
-
-  .mom-hero img{
-    width: 100%;
-    height: auto;
-    object-fit: contain !important;
-    display: block;
-  }
-
-  .mom-hero .mom-overlay{
-    position: relative !important;
-    background: none !important;
-    padding: 1.5rem;
-  }
-
-  .mom-hero h2{
-    font-size: 1.8rem;
-  }
+  .mom-hero{aspect-ratio:auto!important;max-height:none!important;height:auto}
+  .mom-hero img{width:100%;height:auto;object-fit:contain!important;display:block}
+  .mom-hero .mom-overlay{position:relative!important;background:none!important;padding:1.5rem}
+  .mom-hero h2{font-size:1.8rem}
 }
 </style>
 </head>
-c<body>
+<body>
 <div id="nav-root"></div>
 
 <section class="carousel" id="carousel">
@@ -92,7 +69,6 @@ c<body>
   <div class="carousel-dots" id="carouselDots"></div>
 </section>
 
-
 <section class="mom-hero">
   <img src="/images/banner-mom.jpg" alt="Mother's Day Edit" loading="lazy">
   <div class="mom-overlay">
@@ -102,8 +78,8 @@ c<body>
     <a href="/shop.html?q=mother" class="cta">Shop the Mother's Edit →</a>
   </div>
 </section>
-<br>
-<br>
+<br><br>
+
 <section class="container-x section">
   <div class="section-head">
     <div class="label">Shop by Category</div>
@@ -208,12 +184,64 @@ document.getElementById('catCircles').innerHTML = cats.map(c=>`
     <div class="name">${c.name}</div>
   </a>`).join('');
 
-// Best sellers
-const bs = PRODUCTS.slice(0,8);
-document.getElementById('bestSellers').innerHTML = bs.map((p,i)=>productCardHTML(p,i<4)).join('');
+// ---- Sanity image ref parser ----
+function parseSanityImageRef(ref) {
+  if (!ref) return null;
+  const without = ref.replace(/^image-/, '');
+  const lastDash = without.lastIndexOf('-');
+  if (lastDash === -1) return null;
+  const ext = without.slice(lastDash + 1);
+  const base = without.slice(0, lastDash);
+  return `https://cdn.sanity.io/images/vm9jk6j1/production/${base}.${ext}`;
+}
+
+// ---- Plain fetch — no CDN needed ----
+const SANITY_PROJECT = "vm9jk6j1";
+const SANITY_DATASET = "production";
+
+function sanityFetch(query) {
+  const url = `https://${SANITY_PROJECT}.api.sanity.io/v2025-01-01/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+  return fetch(url).then(r => r.json()).then(r => r.result);
+}
+
+sanityFetch(`*[_type == "product"]`).then((products) => {
+  const formattedProducts = products.map((p) => {
+    let imageUrl = "/images/placeholder.jpg";
+    const imageField = p.image;
+    let ref = null;
+    if (Array.isArray(imageField) && imageField.length > 0) {
+      ref = imageField[0]?.asset?._ref;
+    } else if (imageField && !Array.isArray(imageField)) {
+      ref = imageField?.asset?._ref;
+    }
+    if (ref) {
+      const parsed = parseSanityImageRef(ref);
+      if (parsed) imageUrl = parsed;
+    }
+    return {
+      id: p._id,
+      slug: p.slug?.current || p.title?.toLowerCase().replace(/\s+/g,'-'),
+      name: p.title || "Product",
+      price: p.price || 0,
+      image: [imageUrl],
+      category: p.category ? (Array.isArray(p.category) ? p.category : [p.category]) : ["Hampers"],
+      subcategory: p.subcategory ? (Array.isArray(p.subcategory) ? p.subcategory : [p.subcategory]) : [],
+      tagline: p.tagline || p.description || "",
+      description: p.description || "",
+      details: Array.isArray(p.details) ? p.details : []
+    };
+  });
+
+  document.getElementById('bestSellers').innerHTML =
+    formattedProducts.slice(0,8).map((p,i) => productCardHTML(p, i<4)).join('');
+
+}).catch((err) => {
+  console.warn("Sanity fetch failed:", err);
+});
 
 updateCartCount();
 window.addEventListener('cart:update', updateCartCount);
 </script>
+
 </body>
 </html>

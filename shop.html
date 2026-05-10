@@ -16,7 +16,6 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 .marquee{overflow:hidden}.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 5s linear infinite}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* Category dropdown chips */
 .filter-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;align-items:center}
 .cat-dd{position:relative;display:inline-block}
 .cat-dd-menu{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.4rem;min-width:200px;z-index:99;box-shadow:var(--shadow-soft);margin-top:4px}
@@ -41,12 +40,9 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 </section>
 
 <section class="container-x section">
-  <!-- Filter bar -->
   <div class="filter-bar" id="filterBar">
     <button class="chip" id="chipAll" onclick="setCategory('All')">All</button>
-    <!-- Category chips with dropdown submenus injected by JS -->
   </div>
-  <!-- Price/sort row -->
   <div class="price-row-filter">
     <span style="letter-spacing:.2em;text-transform:uppercase">Price ₹</span>
     <input type="number" id="minPrice" placeholder="Min" oninput="applyFilters()">
@@ -70,6 +66,7 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 
 <div id="footer-root"></div>
 <script src="/assets/site.js"></script>
+
 <script>
 document.getElementById('nav-root').innerHTML = navHTML('shop');
 document.getElementById('footer-root').innerHTML = footerHTML();
@@ -89,11 +86,9 @@ if(params.get('sort')) {document.getElementById('sortSel').value=params.get('sor
 // Build category chips with dropdown submenus
 const filterBar = document.getElementById('filterBar');
 
-// Close all open cat dropdowns
 function closeCatMenus(except) {
   document.querySelectorAll('.cat-dd-menu').forEach(m=>{ if(m!==except) m.classList.remove('open'); });
 }
-
 document.addEventListener('click', ()=>closeCatMenus(null));
 
 CATEGORIES.forEach(c=>{
@@ -106,7 +101,6 @@ CATEGORIES.forEach(c=>{
   btn.onclick = function(e) {
     e.stopPropagation();
     const menu = wrap.querySelector('.cat-dd-menu');
-    // Toggle
     const wasOpen = menu.classList.contains('open');
     closeCatMenus(null);
     if(!wasOpen) menu.classList.add('open');
@@ -115,7 +109,6 @@ CATEGORIES.forEach(c=>{
   const menu = document.createElement('div');
   menu.className = 'cat-dd-menu';
 
-  // "All in category" link
   const allLink = document.createElement('a');
   allLink.href = '#';
   allLink.textContent = 'All ' + c.label;
@@ -123,7 +116,6 @@ CATEGORIES.forEach(c=>{
   allLink.onclick = function(e){ e.preventDefault(); setCategory(c.key); closeCatMenus(null); };
   menu.appendChild(allLink);
 
-  // Subcategory links
   c.subs.forEach(s=>{
     const a = document.createElement('a');
     a.href = '#';
@@ -156,19 +148,77 @@ function clearFilters() {
   window.location.href='/shop.html';
 }
 
+// ---- Sanity image ref parser ----
+function parseSanityImageRef(ref) {
+  if (!ref) return null;
+  const without = ref.replace(/^image-/, '');
+  const lastDash = without.lastIndexOf('-');
+  if (lastDash === -1) return null;
+  const ext = without.slice(lastDash + 1);
+  const base = without.slice(0, lastDash);
+  return `https://cdn.sanity.io/images/vm9jk6j1/production/${base}.${ext}`;
+}
+
+function parseSanityProduct(p) {
+  let imageUrl = "/images/placeholder.jpg";
+  const imageField = p.image;
+  let ref = null;
+  if (Array.isArray(imageField) && imageField.length > 0) {
+    ref = imageField[0]?.asset?._ref;
+  } else if (imageField && !Array.isArray(imageField)) {
+    ref = imageField?.asset?._ref;
+  }
+  if (ref) {
+    const parsed = parseSanityImageRef(ref);
+    if (parsed) imageUrl = parsed;
+  }
+  return {
+    id: p._id,
+    slug: p.slug?.current || p.title?.toLowerCase().replace(/\s+/g, '-'),
+    name: p.title || "Product",
+    price: p.price || 0,
+    image: [imageUrl],
+    category: p.category ? (Array.isArray(p.category) ? p.category : [p.category]) : ["Hampers"],
+    subcategory: p.subcategory ? (Array.isArray(p.subcategory) ? p.subcategory : [p.subcategory]) : [],
+    tagline: p.tagline || p.description || "",
+    description: p.description || "",
+    details: Array.isArray(p.details) ? p.details : []
+  };
+}
+
+let STATIC_PRODUCTS = PRODUCTS || [];
+let SANITY_PRODUCTS = [];
+
+// ---- Plain fetch — no CDN needed ----
+const SANITY_PROJECT = "vm9jk6j1";
+const SANITY_DATASET = "production";
+
+function sanityFetch(query) {
+  const url = `https://${SANITY_PROJECT}.api.sanity.io/v2025-01-01/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+  return fetch(url).then(r => r.json()).then(r => r.result);
+}
+
+sanityFetch(`*[_type == "product"]`).then((products) => {
+  SANITY_PRODUCTS = products.map(parseSanityProduct);
+  applyFilters();
+}).catch((err) => {
+  console.warn("Sanity fetch failed, showing static products only:", err);
+});
+
 function applyFilters() {
   activeMin = document.getElementById('minPrice').value ? +document.getElementById('minPrice').value : null;
   activeMax = document.getElementById('maxPrice').value ? +document.getElementById('maxPrice').value : null;
   activeSort = document.getElementById('sortSel').value;
 
-  let results = PRODUCTS.slice();
+  let allProducts = [...STATIC_PRODUCTS, ...SANITY_PRODUCTS];
+  let results = allProducts.slice();
   if(activeCat !== 'All') results = results.filter(p=>matchCat(p,activeCat));
   if(activeSub) results = results.filter(p=>matchSub(p,activeSub));
   if(activeMin!=null) results = results.filter(p=>p.price>=activeMin);
   if(activeMax!=null) results = results.filter(p=>p.price<=activeMax);
   if(activeQ) results = results.filter(p=>
     p.name.toLowerCase().includes(activeQ)||
-    p.tagline.toLowerCase().includes(activeQ)||
+    (p.tagline||'').toLowerCase().includes(activeQ)||
     normArr(p.category).join(' ').includes(activeQ)||
     normArr(p.subcategory).join(' ').includes(activeQ)
   );
@@ -190,9 +240,9 @@ function applyFilters() {
 
 updateChipStates();
 applyFilters();
-
 updateCartCount();
 window.addEventListener('cart:update', updateCartCount);
 </script>
+
 </body>
 </html>

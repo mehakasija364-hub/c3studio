@@ -44,111 +44,327 @@ body{font-family:var(--font-body);background:var(--background);color:var(--foreg
 <div id="footer-root"></div>
 
 <script src="/assets/site.js"></script>
+
 <script>
 document.getElementById('nav-root').innerHTML = navHTML('');
 document.getElementById('footer-root').innerHTML = footerHTML();
 
-const slug = new URLSearchParams(location.search).get('slug');
-const product = PRODUCTS.find(p=>p.slug===slug);
+const params = new URLSearchParams(window.location.search);
+const slug = params.get('slug');
 
-if(!product) {
-  document.getElementById('page-root').innerHTML=`
-    <div style="text-align:center;padding:5rem 1rem">
-      <h1 style="font-size:2.5rem;font-family:var(--font-display)">Hamper not found</h1>
-      <a href="/shop.html" class="btn btn-primary" style="margin-top:1.5rem">Back to Shop</a>
-    </div>`;
+
+// ===== FIND PRODUCT =====
+let p = PRODUCTS.find(x => x.slug === slug);
+
+if (p) {
+
+  renderProductPage(p);
+
 } else {
+
+  // Static me nahi mila → Sanity se fetch karo
+  loadSanityProductBySlug(slug, function(sanityProduct) {
+
+    if (sanityProduct) {
+
+      renderProductPage(sanityProduct);
+
+    } else {
+
+      document.getElementById('page-root').innerHTML = `
+        <div style="text-align:center;padding:5rem">
+          <p style="font-size:1.5rem;color:var(--muted-foreground)">
+            Hamper not found
+          </p>
+
+          <a href="/shop.html"
+             class="btn btn-primary"
+             style="margin-top:1rem">
+             Back to Shop
+          </a>
+        </div>
+      `;
+    }
+
+  });
+}
+
+
+
+// ===== RENDER PRODUCT PAGE =====
+function renderProductPage(product) {
+
   document.title = product.name + ' — C3 Studio';
-  const imgs = Array.isArray(product.image) ? product.image : [product.image];
-  const cat = Array.isArray(product.category) ? product.category.join(' · ') : product.category;
+
+  const imgs = Array.isArray(product.image)
+    ? product.image
+    : [product.image];
+
+  const cat = Array.isArray(product.category)
+    ? product.category.join(' · ')
+    : product.category;
+
   const hasMultiple = imgs.length > 1;
 
-  // Related products
-  const pCats = normArr(product.category).concat(normArr(product.subcategory));
-  const catSet = new Set(pCats);
-  let related = PRODUCTS.filter(p=>p.id!==product.id&&normArr(p.category).concat(normArr(p.subcategory)).some(c=>catSet.has(c))).slice(0,4);
-  if(!related.length) related = PRODUCTS.filter(p=>p.id!==product.id).slice(0,4);
 
+  // ===== RELATED PRODUCTS =====
+  const pCats = normArr(product.category)
+    .concat(normArr(product.subcategory));
+
+  const catSet = new Set(pCats);
+
+  let related = PRODUCTS.filter(p =>
+    p.id !== product.id &&
+    normArr(p.category)
+      .concat(normArr(p.subcategory))
+      .some(c => catSet.has(c))
+  ).slice(0, 4);
+
+  if (!related.length) {
+    related = PRODUCTS.filter(p => p.id !== product.id).slice(0, 4);
+  }
+
+
+  // ===== IMAGE SLIDER =====
   const sliderHTML = `
     <div class="pdp-slider" id="pdpSlider">
+
       <div class="pdp-slides" id="pdpSlides">
-        ${imgs.map(src=>`<div class="pdp-slide"><img src="${src}" alt="${product.name}" fetchpriority="high"></div>`).join('')}
+        ${imgs.map(src => `
+          <div class="pdp-slide">
+            <img src="${src}" alt="${product.name}" fetchpriority="high">
+          </div>
+        `).join('')}
       </div>
+
       ${hasMultiple ? `
-      <button class="pdp-arrow prev" onclick="pdpGo(pdpCur-1)">‹</button>
-      <button class="pdp-arrow next" onclick="pdpGo(pdpCur+1)">›</button>
+        <button class="pdp-arrow prev" onclick="pdpGo(pdpCur-1)">‹</button>
+        <button class="pdp-arrow next" onclick="pdpGo(pdpCur+1)">›</button>
       ` : ''}
+
     </div>
-    ${hasMultiple ? `<div class="pdp-dots" id="pdpDots">${imgs.map((_,i)=>`<span class="${i===0?'active':''}" onclick="pdpGo(${i})"></span>`).join('')}</div>` : ''}
-    ${hasMultiple ? `<div class="pdp-thumbs" id="pdpThumbs">
-      ${imgs.map((src,i)=>`<button class="${i===0?'active':''}" onclick="pdpGo(${i})" id="pdpThumb${i}"><img src="${src}" alt=""></button>`).join('')}
-    </div>` : ''}
+
+    ${hasMultiple ? `
+      <div class="pdp-dots" id="pdpDots">
+        ${imgs.map((_, i) => `
+          <span class="${i === 0 ? 'active' : ''}"
+                onclick="pdpGo(${i})"></span>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    ${hasMultiple ? `
+      <div class="pdp-thumbs" id="pdpThumbs">
+
+        ${imgs.map((src, i) => `
+          <button
+            class="${i === 0 ? 'active' : ''}"
+            onclick="pdpGo(${i})"
+            id="pdpThumb${i}">
+
+            <img src="${src}" alt="">
+          </button>
+        `).join('')}
+
+      </div>
+    ` : ''}
   `;
 
-  document.getElementById('page-root').innerHTML=`
+
+
+  // ===== PAGE HTML =====
+  document.getElementById('page-root').innerHTML = `
+
     <div class="container-x" style="padding-top:1.5rem">
-      <a href="/shop.html" style="font-size:11px;letter-spacing:.2em;text-transform:uppercase">← Back to Shop</a>
+      <a href="/shop.html"
+         style="font-size:11px;letter-spacing:.2em;text-transform:uppercase">
+         ← Back to Shop
+      </a>
     </div>
+
     <section class="container-x product-grid">
+
       <div>
         ${sliderHTML}
       </div>
+
       <div class="product-info">
+
         <div class="product-cat">${cat}</div>
+
         <h1>${product.name}</h1>
-        <div class="product-tag">${product.tagline}</div>
-        <div class="product-price">
-          <span class="price">${fmtPrice(product.price)}</span>
-          ${product.oldPrice?`<span class="price-old" style="font-size:1.1rem">${fmtPrice(product.oldPrice)}</span><span class="save-tag">Save ${fmtPrice(product.oldPrice-product.price)}</span>`:''}
+
+        <div class="product-tag">
+          ${product.tagline || ''}
         </div>
-        <p class="product-desc">${product.description}</p>
+
+        <div class="product-price">
+
+          <span class="price">
+            ${fmtPrice(product.price)}
+          </span>
+
+          ${product.oldPrice ? `
+            <span class="price-old" style="font-size:1.1rem">
+              ${fmtPrice(product.oldPrice)}
+            </span>
+
+            <span class="save-tag">
+              Save ${fmtPrice(product.oldPrice - product.price)}
+            </span>
+          ` : ''}
+
+        </div>
+
+        <p class="product-desc">
+          ${product.description || ''}
+        </p>
+
         <ul class="detail-list">
-          ${product.details.map(d=>`<li><span class="detail-check">✓</span>${d}</li>`).join('')}
+
+          ${(product.details || []).map(d => `
+            <li>
+              <span class="detail-check">✓</span>
+              ${d}
+            </li>
+          `).join('')}
+
         </ul>
+
         <div class="qty-cta">
+
           <div class="qty-control">
             <button onclick="changeQty(-1)">−</button>
             <span id="qtyVal">1</span>
             <button onclick="changeQty(1)">+</button>
           </div>
-          <button class="btn btn-dark" onclick="addToCartPDP()">🛍 Add to Cart</button>
-          <a href="${waCustomise(product)}" target="_blank" rel="noreferrer" class="btn btn-gold">✨ Customise This Hamper</a>
-          <a href="${waOrder(product)}" target="_blank" rel="noreferrer" class="btn btn-primary">💬 Order on WhatsApp</a>
-        </div>
-      </div>
-    </section>
-    <section class="container-x section">
-      <h2 style="font-family:var(--font-display);font-size:2rem;margin-bottom:2rem">You may also love</h2>
-      <div class="grid-products">${related.map(p=>productCardHTML(p)).join('')}</div>
-    </section>`;
 
-  // Slider logic
+          <button class="btn btn-dark" onclick="addToCartPDP()">
+            🛍 Add to Cart
+          </button>
+
+          <a href="${waCustomise(product)}"
+             target="_blank"
+             rel="noreferrer"
+             class="btn btn-gold">
+
+             ✨ Customise This Hamper
+          </a>
+
+          <a href="${waOrder(product)}"
+             target="_blank"
+             rel="noreferrer"
+             class="btn btn-primary">
+
+             💬 Order on WhatsApp
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="container-x section">
+
+      <h2 style="font-family:var(--font-display);font-size:2rem;margin-bottom:2rem">
+        You may also love
+      </h2>
+
+      <div class="grid-products">
+        ${related.map(p => productCardHTML(p)).join('')}
+      </div>
+
+    </section>
+  `;
+
+
+
+  // ===== SLIDER LOGIC =====
   let pdpCur = 0;
   const totalImgs = imgs.length;
+
   window.pdpGo = function(n) {
+
     pdpCur = ((n % totalImgs) + totalImgs) % totalImgs;
-    document.getElementById('pdpSlides').style.transform = `translateX(-${pdpCur*100}%)`;
-    if(document.getElementById('pdpDots')) {
-      document.querySelectorAll('#pdpDots span').forEach((s,i)=>s.classList.toggle('active',i===pdpCur));
+
+    document.getElementById('pdpSlides').style.transform =
+      `translateX(-${pdpCur * 100}%)`;
+
+    if (document.getElementById('pdpDots')) {
+
+      document
+        .querySelectorAll('#pdpDots span')
+        .forEach((s, i) => {
+          s.classList.toggle('active', i === pdpCur);
+        });
     }
-    document.querySelectorAll('[id^="pdpThumb"]').forEach((b,i)=>b.classList.toggle('active',i===pdpCur));
+
+    document
+      .querySelectorAll('[id^="pdpThumb"]')
+      .forEach((b, i) => {
+        b.classList.toggle('active', i === pdpCur);
+      });
   };
 
-  // Touch/swipe support
-  let ts=0, tx=0;
+
+
+  // ===== TOUCH SUPPORT =====
+  let ts = 0;
+  let tx = 0;
+
   const sliderEl = document.getElementById('pdpSlider');
-  if(sliderEl && hasMultiple) {
-    sliderEl.addEventListener('touchstart',e=>{ts=e.touches[0].clientX;tx=ts;},{passive:true});
-    sliderEl.addEventListener('touchmove',e=>{tx=e.touches[0].clientX;},{passive:true});
-    sliderEl.addEventListener('touchend',()=>{const d=ts-tx;if(Math.abs(d)>40)window.pdpGo(d>0?pdpCur+1:pdpCur-1);});
+
+  if (sliderEl && hasMultiple) {
+
+    sliderEl.addEventListener('touchstart', e => {
+      ts = e.touches[0].clientX;
+      tx = ts;
+    }, { passive: true });
+
+    sliderEl.addEventListener('touchmove', e => {
+      tx = e.touches[0].clientX;
+    }, { passive: true });
+
+    sliderEl.addEventListener('touchend', () => {
+
+      const d = ts - tx;
+
+      if (Math.abs(d) > 40) {
+        window.pdpGo(d > 0 ? pdpCur + 1 : pdpCur - 1);
+      }
+
+    });
   }
 
+
+
+  // ===== QTY =====
   let qty = 1;
-  window.changeQty = function(d){qty=Math.max(1,qty+d);document.getElementById('qtyVal').textContent=qty;}
-  window.addToCartPDP = function(){cartAdd(product.id,qty);showToast('Added to cart ✓');}
+
+  window.changeQty = function(d) {
+
+    qty = Math.max(1, qty + d);
+
+    document.getElementById('qtyVal').textContent = qty;
+  };
+
+
+
+  // ===== CART =====
+  window.addToCartPDP = function() {
+
+    cartAdd(product.id, qty);
+
+    showToast('Added to cart ✓');
+  };
+
 }
 
+
 updateCartCount();
+
 window.addEventListener('cart:update', updateCartCount);
 </script>
 </body>
